@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./styles.css";
 import PlaceholderIcon from "./timeImage/PlaceholderIcon";
 import { get } from "lodash";
+import ReactTooltip from 'react-tooltip';
 
-const Day = ({ temp, image, label, selected = false }) => {
+const Day = ({ temp, image, label, selected = false, details = '' }) => {
   return (
-    <div className={`day ${selected && "selected"}`}>
+    <div data-tip={details} className={`day ${selected && "selected"}`}>
       <div className="daylabel">{label}</div>
       <div className="dayimage">{image}</div>
       <div className="daytemp">{temp}</div>
@@ -40,7 +41,7 @@ const MeteoWidget = () => {
       fetch(
         `https://api.weatherbit.io/v2.0/forecast/daily?&lat=${coords[0]}&lon=${
         coords[1]
-        }3&lang=it&days=7&key=c34a0091a8b548d89208c4572a9f8c99`
+        }3&lang=en&days=7&key=c34a0091a8b548d89208c4572a9f8c99`
       )
         .then(res => res.json())
         .then(res => {
@@ -57,6 +58,7 @@ const MeteoWidget = () => {
 
   return (
     <div style={{ textAlign: 'center' }}>
+      <ReactTooltip />
       <div className="flip-box-front">
         <div id="summary">
           <div id="location">
@@ -86,6 +88,7 @@ const MeteoWidget = () => {
               selected={i === 0}
               image={getIcon(day)}
               label={getLabel(day)}
+              details={`${get(day, 'weather.description', '')}, Humidity: ${get(day, 'rh', '0')} % `}
             />
           ))}
         </div>
